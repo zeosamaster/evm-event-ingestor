@@ -17,7 +17,15 @@ $ npm i
 
 ### Start
 
-Starts ingestor
+Start ingestor
+
+```shell
+$ npm run start
+```
+
+### Debug
+
+Start ingestor in debug mode
 
 ```shell
 $ npm run start
@@ -27,11 +35,11 @@ $ npm run start
 
 To run the server, the following env vars need to be set on a `.env` file in the root of the repo (see [.env.example](/.env.example))
 
-| Name         | Description                                                     |
-| ------------ | --------------------------------------------------------------- |
-| DEBUG        | Determines namespaces to debug. Available: main, load, ingestor |
-| SUPABASE_URL | Supabase URL to store the events                                |
-| SUPABASE_KEY | Supabase Key to store the events                                |
+| Name         | Description                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| DEBUG        | Determines namespaces to [debug](https://www.npmjs.com/package/debug#usage). Available: main, load, ingestor |
+| SUPABASE_URL | Supabase URL to store the events and read configs                                                            |
+| SUPABASE_KEY | Supabase Key to store the events and read configs                                                            |
 
 ### Supabase
 
