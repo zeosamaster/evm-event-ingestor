@@ -1,3 +1,4 @@
+const debug = require("debug")("load");
 const { ethers } = require("ethers");
 const { getProvider } = require("./provider");
 const supabase = require("./supabase");
@@ -14,12 +15,12 @@ async function getContracts(networkId) {
     .select("address,abi")
     .eq("network_id", networkId);
 
-  console.debug({ contractsConfig });
+  debug("Database contracts: %j", contractsConfig);
 
   return contractsConfig.map(({ address, abi }) => {
     const eventsAbi = abi.filter(isEvent);
 
-    console.debug({ eventsAbi });
+    debug("Contract events ABI: %j", eventsAbi);
 
     const contract = new ethers.Contract(address, eventsAbi, provider);
     return { address, abi: eventsAbi, contract };

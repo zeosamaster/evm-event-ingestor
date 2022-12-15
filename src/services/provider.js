@@ -1,3 +1,4 @@
+const debug = require("debug")("load");
 const { ethers } = require("ethers");
 const supabase = require("./supabase");
 
@@ -7,7 +8,7 @@ async function getProvider(networkId) {
     .select("rpc_url")
     .eq("network_id", networkId);
 
-  console.debug({ networks });
+  debug("Database networks: %j", networks);
 
   if (!networks?.[0]?.rpc_url) {
     throw Error("Unable to get RPC URL");

@@ -1,4 +1,5 @@
-const supabase = require("../services/supabase");
+const debug = require("debug")("ingestor");
+const { insertEvent } = require("./database");
 
 function getEventMetadata(raw_log) {
   const timestamp = new Date();
@@ -26,40 +27,6 @@ function getEventMetadata(raw_log) {
   };
 }
 
-async function insertEvent({
-  timestamp,
-  block_number,
-  block_hash,
-  contract_address,
-  transaction_hash,
-  topic_id,
-  event,
-  inputs,
-  raw_log,
-}) {
-  console.debug("Inserting event", event, transaction_hash);
-
-  const { error } = await supabase.from("events").insert([
-    {
-      timestamp,
-      block_number,
-      block_hash,
-      contract_address,
-      transaction_hash,
-      topic_id,
-      event,
-      inputs,
-      raw_log,
-    },
-  ]);
-
-  if (error) {
-    console.error("Error inserting event", error);
-  } else {
-    console.info("Inserted event", event);
-  }
-}
-
 const getEventIngestor = (eventName, inputsConfig) => {
   return async (...eventArgs) => {
     // the raw log is the last argument passed to event listeners
@@ -67,7 +34,7 @@ const getEventIngestor = (eventName, inputsConfig) => {
 
     // log event ingestion start
     const { transactionHash } = raw_log;
-    console.info("Detected event", eventName, transactionHash);
+    debug("Detected event %s on tx %s", eventName, transactionHash);
 
     // get the event metadata from the raw log
     const metadata = getEventMetadata(raw_log);
@@ -78,14 +45,14 @@ const getEventIngestor = (eventName, inputsConfig) => {
       return { ...res, [name]: eventArg.toString() };
     }, {});
 
-    console.debug({ inputs });
+    debug("Event inputs: %o", inputs);
 
     // store the event
     await insertEvent({ ...metadata, inputs });
 
     // log event ingestion success
-    console.info(
-      "Event successfully ingested event",
+    debug(
+      "Successfully ingested event %s from tx %s",
       eventName,
       transactionHash
     );

@@ -1,12 +1,13 @@
 require("dotenv").config();
 
+const debug = require("debug")("main");
 const { getContracts } = require("./services/contracts");
 const { getEventIngestor } = require("./services/events");
 
 const { NETWORK_ID } = process.env;
 
 async function main() {
-  console.info("App started");
+  debug("App started");
 
   const contracts = await getContracts(NETWORK_ID);
 
@@ -16,7 +17,7 @@ async function main() {
     });
   });
 
-  console.info("Listening to contract events on network", NETWORK_ID);
+  debug("App listening to contract events from network %s", NETWORK_ID);
 
   await new Promise(() => {});
 }

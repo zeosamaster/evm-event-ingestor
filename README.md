@@ -27,11 +27,12 @@ $ npm run start
 
 To run the server, the following env vars need to be set on a `.env` file in the root of the repo (see [.env.example](/.env.example))
 
-| Name         | Description                               |
-| ------------ | ----------------------------------------- |
-| SUPABASE_URL | Supabase URL to store the events          |
-| SUPABASE_KEY | Supabase Key to store the events          |
-| NETWORK_ID   | Network the app should ingest events from |
+| Name         | Description                                                     |
+| ------------ | --------------------------------------------------------------- |
+| DEBUG        | Determines namespaces to debug. Available: main, load, ingestor |
+| SUPABASE_URL | Supabase URL to store the events                                |
+| SUPABASE_KEY | Supabase Key to store the events                                |
+| NETWORK_ID   | Network the app should ingest events from                       |
 
 ## Supabase schema
 
