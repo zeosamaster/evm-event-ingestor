@@ -4,20 +4,22 @@ const debug = require("debug")("main");
 const { getContracts } = require("./services/contracts");
 const { getEventIngestor } = require("./services/events");
 
-const { NETWORK_ID } = process.env;
-
 async function main() {
   debug("App started");
 
-  const contracts = await getContracts(NETWORK_ID);
+  // get contracts to listen to
+  const contracts = await getContracts();
 
-  contracts.forEach(({ contract, abi }) => {
+  // iterate contracts to setup event listeners
+  contracts.forEach(({ network_id, contract, abi }) => {
+    // iterate contract events to setup event listeners for
     abi.forEach(({ name, inputs }) => {
-      contract.on(name, getEventIngestor(name, inputs));
+      // add an ingestor as an event listener
+      contract.on(name, getEventIngestor(name, network_id, inputs));
     });
   });
 
-  debug("App listening to contract events from network %s", NETWORK_ID);
+  debug("App listening to contract events");
 
   await new Promise(() => {});
 }

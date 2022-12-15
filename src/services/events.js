@@ -27,14 +27,19 @@ function getEventMetadata(raw_log) {
   };
 }
 
-const getEventIngestor = (eventName, inputsConfig) => {
+const getEventIngestor = (eventName, network_id, inputsConfig) => {
   return async (...eventArgs) => {
     // the raw log is the last argument passed to event listeners
     const raw_log = eventArgs.pop();
 
     // log event ingestion start
     const { transactionHash } = raw_log;
-    debug("Detected event %s on tx %s", eventName, transactionHash);
+    debug(
+      "Detected event %s on tx %s on network %s",
+      eventName,
+      transactionHash,
+      network_id
+    );
 
     // get the event metadata from the raw log
     const metadata = getEventMetadata(raw_log);
@@ -48,13 +53,14 @@ const getEventIngestor = (eventName, inputsConfig) => {
     debug("Event inputs: %o", inputs);
 
     // store the event
-    await insertEvent({ ...metadata, inputs });
+    await insertEvent({ ...metadata, network_id, inputs });
 
     // log event ingestion success
     debug(
-      "Successfully ingested event %s from tx %s",
+      "Successfully ingested event %s from tx %s on network %s",
       eventName,
-      transactionHash
+      transactionHash,
+      network_id
     );
   };
 };

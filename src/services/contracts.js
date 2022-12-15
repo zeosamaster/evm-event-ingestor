@@ -1,29 +1,37 @@
 const debug = require("debug")("load");
 const { ethers } = require("ethers");
-const { getProvider } = require("./provider");
+const { getProviders } = require("./providers");
 const supabase = require("./supabase");
 
-function isEvent(config) {
-  return config.type === "event";
-}
+async function getContracts() {
+  // get providers for all the configured networks
+  const providers = await getProviders();
 
-async function getContracts(networkId) {
-  const provider = await getProvider(networkId);
-
-  const { data: contractsConfig } = await supabase
+  // load contracts config from the database
+  const { data: contracts } = await supabase
     .from("contracts")
-    .select("address,abi")
-    .eq("network_id", networkId);
+    .select("network_id,address,abi");
 
-  debug("Database contracts: %j", contractsConfig);
+  debug("Database contracts: %j", contracts);
 
-  return contractsConfig.map(({ address, abi }) => {
-    const eventsAbi = abi.filter(isEvent);
+  // disregard contracts for which there isn't an available provider
+  const filteredContracts = contracts.filter(
+    ({ network_id }) => !!providers[network_id]
+  );
+
+  // instantiate contracts for each contract config
+  return filteredContracts.map(({ network_id, address, abi }) => {
+    // disregard non-event ABI items
+    const eventsAbi = abi.filter((item) => item.type === "event");
 
     debug("Contract events ABI: %j", eventsAbi);
 
+    // get relevant JsonRpcProvider
+    const provider = providers[network_id];
+
+    // instantiate contract
     const contract = new ethers.Contract(address, eventsAbi, provider);
-    return { address, abi: eventsAbi, contract };
+    return { network_id, address, abi: eventsAbi, contract };
   });
 }
 

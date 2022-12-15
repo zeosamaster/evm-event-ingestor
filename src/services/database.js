@@ -3,6 +3,7 @@ const supabase = require("./supabase");
 
 async function insertEvent({
   timestamp,
+  network_id,
   block_number,
   block_hash,
   contract_address,
@@ -12,11 +13,17 @@ async function insertEvent({
   inputs,
   raw_log,
 }) {
-  debug("Inserting event %s from tx %s", event, transaction_hash);
+  debug(
+    "Inserting event %s from tx %s on network %s",
+    event,
+    transaction_hash,
+    network_id
+  );
 
   const { error } = await supabase.from("events").insert([
     {
       timestamp,
+      network_id,
       block_number,
       block_hash,
       contract_address,
