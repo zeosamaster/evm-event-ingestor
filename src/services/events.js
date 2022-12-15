@@ -75,7 +75,7 @@ const getEventIngestor = (eventName, inputsConfig) => {
     // parse the remaining listener arguments based on the event inputs config
     const inputs = eventArgs.reduce((res, eventArg, i) => {
       const { name } = inputsConfig[i];
-      return { ...res, [name]: eventArg };
+      return { ...res, [name]: eventArg.toString() };
     }, {});
 
     console.debug({ inputs });
