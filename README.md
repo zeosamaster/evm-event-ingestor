@@ -1,8 +1,9 @@
-# Recurring Transfers (Event Ingestor)
+# EVM Event Ingestor
 
 ## Summary
 
-This backend app ingests the events emitted by the Recurring Transfers smart contract and stores them on a Supabase database
+This backend app ingests on-chain EVM events emitted by smart contracts and stores them.
+This app is supported by a Supabase database that contains the configuration for networks and contracts and stores the ingested events.
 
 ## Developer Guide
 
@@ -16,7 +17,7 @@ $ npm i
 
 ### Start
 
-Starts the REST API
+Starts ingestor
 
 ```shell
 $ npm run start
@@ -31,3 +32,22 @@ To run the server, the following env vars need to be set on a `.env` file in the
 | SUPABASE_URL | Supabase URL to store the events          |
 | SUPABASE_KEY | Supabase Key to store the events          |
 | NETWORK_ID   | Network the app should ingest events from |
+
+## Supabase schema
+
+### networks
+
+| Column Name | Description                           |
+| ----------- | ------------------------------------- |
+| network_id  | Network ID                            |
+| rpc_url     | RPC URL to generate a JsonRpcProvider |
+
+### contracts
+
+| Column Name | Description                                  |
+| ----------- | -------------------------------------------- |
+| network_id  | Network the contract is deployed on          |
+| address     | Contract address                             |
+| abi         | Contract ABI containing the events to ingest |
+| name        | Contract name (optional)                     |
+| version     | Contract version (optional)                  |
