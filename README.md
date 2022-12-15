@@ -33,21 +33,7 @@ To run the server, the following env vars need to be set on a `.env` file in the
 | SUPABASE_URL | Supabase URL to store the events                                |
 | SUPABASE_KEY | Supabase Key to store the events                                |
 
-## Supabase schema
+### Supabase
 
-### networks
-
-| Column Name | Description                           |
-| ----------- | ------------------------------------- |
-| network_id  | Network ID                            |
-| rpc_url     | RPC URL to generate a JsonRpcProvider |
-
-### contracts
-
-| Column Name | Description                                  |
-| ----------- | -------------------------------------------- |
-| network_id  | Network the contract is deployed on          |
-| address     | Contract address                             |
-| abi         | Contract ABI containing the events to ingest |
-| name        | Contract name (optional)                     |
-| version     | Contract version (optional)                  |
+To start this app, a supabase instance needs to be pre-configured.
+See [Schema](./SCHEMA.md) for details on the required tables.
